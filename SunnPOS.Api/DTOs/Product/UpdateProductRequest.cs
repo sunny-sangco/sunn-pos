@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-namespace SunnPOS.Api.DTOs;
-public class CreateProductRequest
+
+namespace SunnPOS.Api.DTOs.Products;
+
+public class UpdateProductRequest
 {
     [Required]
     [StringLength(30)]
@@ -15,4 +17,7 @@ public class CreateProductRequest
 
     [Range(0, int.MaxValue)]
     public int StockQuantity { get; set; }
+
+    [Required]
+    public Guid CategoryId { get; set; }
 }

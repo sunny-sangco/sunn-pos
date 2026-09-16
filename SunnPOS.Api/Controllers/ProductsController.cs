@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SunnPOS.Api.DTOs;
+using SunnPOS.Api.DTOs.Products;
 using SunnPOS.Api.Services;
 
 namespace SunnPOS.Api.Controllers;
@@ -29,15 +29,14 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetByIdAsync(id);
 
         if (product is null)
-        {
             return NotFound();
-        }
 
         return Ok(product);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateProductRequest request)
+    public async Task<IActionResult> Create(
+        CreateProductRequest request)
     {
         var product = await _productService.CreateAsync(request);
 
@@ -45,5 +44,29 @@ public class ProductsController : ControllerBase
             nameof(GetById),
             new { id = product.Id },
             product);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(
+        Guid id,
+        UpdateProductRequest request)
+    {
+        var product = await _productService.UpdateAsync(id, request);
+
+        if (product is null)
+            return NotFound();
+
+        return Ok(product);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var deleted = await _productService.DeleteAsync(id);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
     }
 }
