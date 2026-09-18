@@ -1,9 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using SunnPOS.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Add controller support
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)));
+
+// Add services to the container.
 
 // Register our services
 builder.Services.AddScoped<

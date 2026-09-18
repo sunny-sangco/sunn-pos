@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SunnPOS.Api.Data;
 using SunnPOS.Api.DTOs.Products;
 using SunnPOS.Api.Models;
 
@@ -5,16 +7,23 @@ namespace SunnPOS.Api.Services;
 
 public class ProductService : IProductService
 {
-    private readonly List<Product> _products = new();
 
-    public Task<IEnumerable<Product>> GetAllAsync()
+    private readonly AppDbContext _context;
+
+    public ProductService(AppDbContext context)
     {
-        return Task.FromResult<IEnumerable<Product>>(_products);
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Product>> GetAllAsync()
+    {
+        return await _context.Products
+            .ToListAsync();
     }
 
     public Task<Product?> GetByIdAsync(Guid id)
     {
-        var product = _products.FirstOrDefault(p => p.Id == id);
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
 
         return Task.FromResult(product);
     }
@@ -32,7 +41,7 @@ public class ProductService : IProductService
             CreatedAt = DateTime.UtcNow
         };
 
-        _products.Add(product);
+        _context.Products.Add(product);
 
         return Task.FromResult(product);
     }
@@ -41,7 +50,7 @@ public class ProductService : IProductService
         Guid id,
         UpdateProductRequest request)
     {
-        var product = _products.FirstOrDefault(p => p.Id == id);
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
 
         if (product is null)
         {
@@ -59,14 +68,14 @@ public class ProductService : IProductService
 
     public Task<bool> DeleteAsync(Guid id)
     {
-        var product = _products.FirstOrDefault(p => p.Id == id);
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
 
         if (product is null)
         {
             return Task.FromResult(false);
         }
 
-        _products.Remove(product);
+        _context.Products.Remove(product);
 
         return Task.FromResult(true);
     }
