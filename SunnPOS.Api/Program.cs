@@ -9,6 +9,10 @@ var connectionString =
 // Add controller support
 builder.Services.AddControllers();
 
+// Register the Swagger generator
+builder.Services.AddEndpointsApiExplorer(); // Required for minimal APIs / routing explorer
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
@@ -43,6 +47,12 @@ if (app.Environment.IsDevelopment())
 {
     // app.MapOpenApi();
     app.UseHttpsRedirection();
+    
+       // Enable middleware to serve generated Swagger as a JSON endpoint.
+    app.UseSwagger();
+    
+    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.)
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
